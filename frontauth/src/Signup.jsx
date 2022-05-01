@@ -1,35 +1,36 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  const history = useNavigate();
+
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const sendRequest = async () => {
     const userObject = {
       name: userName,
       email: userEmail,
       password: userPassword,
     };
 
-    Axios.post('http://localhost:5000/api/v1/register', userObject)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const res = await Axios.post(
+      'http://localhost:5000/api/v1/register',
+      userObject
+    );
 
-    setUserName('');
-    setUserEmail('');
-    setUserPassword('');
+    const data = await res.data;
+
+    return data;
   };
 
-  // const createUser = () => {
-  // };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    sendRequest().then(() => history('/login'));
+  };
 
   return (
     <>
@@ -73,7 +74,6 @@ const Signup = () => {
             type="submit"
             value="Signup"
             className="px-4 py-3 rounded-lg mt-1 cursor-pointer text-white text-lg bg-blue-500"
-            // onClick={createUser}
           />
         </form>
       </div>

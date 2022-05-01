@@ -16,7 +16,6 @@ const Login = () => {
     Axios.post('http://localhost:5000/api/v1/login', userData)
       .then((res) => {
         console.log(res);
-        window.location('/signup');
       })
       .catch((err) => console.log(err));
 

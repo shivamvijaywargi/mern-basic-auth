@@ -5,22 +5,28 @@ const Login = () => {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const sendRequest = async () => {
     const userData = {
       email: userEmail,
       password: userPassword,
     };
 
-    Axios.post('http://localhost:5000/api/v1/login', userData)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+    const res = await Axios.post(
+      'http://localhost:5000/api/v1/login',
+      userData
+    );
 
-    setUserEmail('');
-    setUserPassword('');
+    const data = await res.data;
+
+    console.log(data);
+
+    return data;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    sendRequest();
   };
 
   return (

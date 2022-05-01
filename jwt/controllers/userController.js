@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 const catchAsyncError = require('../middlewares/catchAsyncError');
 const sendToken = require('../utils/jwtToken');
 
+const jwt = require('jsonwebtoken');
+
 exports.registerUser = catchAsyncError(async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -30,4 +32,22 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
   }
 
   sendToken(user, 200, res);
+});
+
+exports.getUser = catchAsyncError(async (req, res, next) => {
+  const userId = req.user;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return res.json({
+      success: false,
+      message: 'No user found',
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
 });

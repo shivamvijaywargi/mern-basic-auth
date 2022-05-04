@@ -6,6 +6,10 @@ Axios.defaults.withCredentials = false;
 const User = () => {
   const [user, setUser] = useState();
 
+  useEffect(() => {
+    sendRequest().then((data) => setUser(data.user));
+  }, []);
+
   const sendRequest = async () => {
     const res = await Axios.get('http://localhost:5000/api/v1/user', {
       withCredentials: true,
@@ -16,10 +20,6 @@ const User = () => {
 
     return data;
   };
-
-  useEffect(() => {
-    sendRequest().then((data) => setUser(data.user));
-  }, []);
 
   return <div>Welcome {user && <h1>{user.name}</h1>}</div>;
 };

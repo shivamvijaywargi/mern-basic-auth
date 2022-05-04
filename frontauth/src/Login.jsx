@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const history = useNavigate();
+
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
+
+  const [navigate, setNavigate] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    sendRequest();
+
+    if (navigate) {
+      sendRequest().then(() => history('/user'));
+    }
+  };
 
   const sendRequest = async () => {
     const userData = {
@@ -13,20 +28,15 @@ const Login = () => {
 
     const res = await Axios.post(
       'http://localhost:5000/api/v1/login',
-      userData
-    );
+      userData,
+      { withCredentials: true }
+    ).catch((err) => console.log(err));
 
     const data = await res.data;
 
-    console.log(data);
+    setNavigate(true);
 
     return data;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    sendRequest();
   };
 
   return (

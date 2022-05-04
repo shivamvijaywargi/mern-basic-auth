@@ -6,11 +6,20 @@ const connectDB = require('./config/db');
 
 const app = express();
 
+// Cookie Parser
+app.use(cookieParser());
+
+// configuring cors and setting cors middleware
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 // Express middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(cookieParser());
 
 // Connection to DB
 connectDB();

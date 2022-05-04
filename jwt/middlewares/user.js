@@ -1,25 +1,19 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
 const catchAsyncError = require('./catchAsyncError');
 
 exports.isLoggedIn = catchAsyncError(async (req, res, next) => {
   const token =
-    req.cookies.token || req.headers('Authorization').replace('Bearer ', '');
+    req.cookies.token || req?.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(404).json({
-      success: false,
-      message: 'No Token found',
-    });
+    return new Error('Please login to continue');
   }
 
-  jwt.verify(String(token), process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(400).json({ message: 'Invalid Token' });
-    }
-    console.log(user.id);
-    req.user = user.id;
-  });
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  req.user = await User.findById(decoded.id);
 
   next();
 });
